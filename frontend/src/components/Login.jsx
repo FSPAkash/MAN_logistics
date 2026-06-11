@@ -1,5 +1,6 @@
 import { useState } from "react";
 import fsLogo from "../assets/FS.png";
+import manLogo from "../assets/MAN_logo.png";
 
 const DEMO_USER = "demo";
 const DEMO_PASS = "fs1234";
@@ -23,6 +24,7 @@ export function Login({ onAuth }) {
   return (
     <div className="login-shell">
       <form className="login-card" onSubmit={handleSubmit}>
+        <img className="login-logo" src={manLogo} alt="MAN Logistics" />
         <div className="login-brand">MAN Logistics</div>
         <div className="login-sub">Sign in to demo console</div>
         <label className="login-field">

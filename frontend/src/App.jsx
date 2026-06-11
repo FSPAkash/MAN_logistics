@@ -21,6 +21,7 @@ export default function App() {
   const [customers, setCustomers] = useState([]);
   const [shipments, setShipments] = useState([]);
   const [tickets, setTickets] = useState([]);
+  const [messages, setMessages] = useState([]);
   const [nudges, setNudges] = useState([]);
   const [runs, setRuns] = useState([]);
   const [agentActions, setAgentActions] = useState([]);
@@ -33,7 +34,7 @@ export default function App() {
 
   const loadAll = useCallback(async () => {
     try {
-      const [h, c, s, t, a, cfg, ndg, rns] = await Promise.all([
+      const [h, c, s, t, a, cfg, ndg, rns, msg] = await Promise.all([
         api.health(),
         api.customers(),
         api.shipments(),
@@ -42,12 +43,14 @@ export default function App() {
         api.agentConfig(),
         api.nudges(),
         api.agentRuns({ limit: 200 }),
+        api.messages({ limit: 2000 }),
       ]);
       setGeneratedAt(h.generated_at);
       setKpis(h.kpis || {});
       setCustomers(c.items || []);
       setShipments(s.items || []);
       setTickets(t.items || []);
+      setMessages(msg.items || []);
       setAgentActions(a.items || []);
       setAgentConfig(cfg);
       setNudges(ndg.items || []);
@@ -120,6 +123,8 @@ export default function App() {
             customers={orderedCustomers}
             shipments={shipments}
             tickets={tickets}
+            messages={messages}
+            nudges={nudges}
             lastResult={lastResult}
             onOpenPhone={() => setPhoneOpen(true)}
           />

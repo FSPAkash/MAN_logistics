@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { NAV_ITEMS } from "../../theme";
+import manLogo from "../../assets/MAN_logo.png";
+import fsLogo from "../../assets/FS.png";
 
 export function AppShell({
   active,
@@ -15,24 +17,12 @@ export function AppShell({
 }) {
   const [collapsed, setCollapsed] = useState(false);
   const generatedLabel = generatedAt ? new Date(generatedAt).toLocaleString() : "Loading...";
-  const agentPillLabel =
-    agentConfig?.backend === "openai"
-      ? `AI - ${agentConfig?.classify_model || "gpt-4o-mini"}`
-      : "Agent live";
+  const agentPillLabel = agentConfig?.backend === "openai" ? "AI" : "Agent live";
 
   return (
     <div className="app-root" data-section={active}>
-      <div className="aurora-wrap" aria-hidden>
-        <div className="mesh mesh-1" />
-        <div className="mesh mesh-2" />
-        <div className="mesh mesh-3" />
-        <div className="mesh mesh-4" />
-        <div className="mesh mesh-5" />
-        <div className="mesh mesh-6" />
-      </div>
-
       <div className="app-shell-frame">
-        <header className="top-bar glass-strong">
+        <header className="top-bar">
           <div className="brand-wrap">
             <button
               type="button"
@@ -43,7 +33,9 @@ export function AppShell({
             >
               {collapsed ? ">" : "<"}
             </button>
-            <div className="brand-avatar">M</div>
+            <div className="brand-logo">
+              <img src={manLogo} alt="MAN Logistics" />
+            </div>
             <div>
               <p className="brand-title">MAN Comms Console</p>
               <p className="brand-sub">Agentic customer comms layer - POC</p>
@@ -54,14 +46,6 @@ export function AppShell({
             <div className="agent-pill" title={agentConfig?.backend === "openai" ? "OpenAI agent online" : "Agent online"}>
               <span className="dot" />
               {agentPillLabel}
-            </div>
-            <label className="meta-pill">
-              <span className="meta-label">Seed</span>
-              <input value={seedInput} onChange={(e) => onSeedInput(e.target.value)} aria-label="Seed" />
-            </label>
-            <div className="meta-pill" title={generatedLabel}>
-              <span className="meta-label">Generated</span>
-              <span className="meta-value">{generatedLabel}</span>
             </div>
             <button type="button" className="btn-primary btn-small" onClick={onReseed}>
               Reseed
@@ -87,8 +71,8 @@ export function AppShell({
               </button>
             ))}
             {!collapsed && kpis ? (
-              <div style={{ marginTop: 14, padding: "12px 6px", borderTop: "1px solid rgba(148,188,224,0.2)" }}>
-                <div style={{ fontSize: 10, color: "var(--gray-500)", textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 8, paddingLeft: 6 }}>
+              <div style={{ marginTop: 14, padding: "12px 6px", borderTop: "1px solid var(--line-2)" }}>
+                <div style={{ fontSize: 10, color: "var(--gray-500)", textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 8, paddingLeft: 6, fontWeight: 600 }}>
                   Agent workload
                 </div>
                 <MiniStat label="Handled" value={kpis.messages_handled} />
@@ -101,6 +85,27 @@ export function AppShell({
           </aside>
           <main className="content-wrap">{children}</main>
         </div>
+
+        <footer className="statusbar">
+          <span className="dot" aria-hidden />
+          <span>CONNECTED</span>
+          <span className="sep" aria-hidden />
+          <label style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
+            <span className="meta-label">Seed</span>
+            <input
+              value={seedInput}
+              onChange={(e) => onSeedInput(e.target.value)}
+              aria-label="Seed"
+              style={{ width: 64, height: 20, padding: "0 6px", fontSize: 11 }}
+            />
+          </label>
+          <span className="sep" aria-hidden />
+          <span title={generatedLabel}>GENERATED {generatedLabel}</span>
+          <span className="right">
+            <span className="powered-label">Powered by</span>
+            <img className="powered-logo" src={fsLogo} alt="Findability Sciences" />
+          </span>
+        </footer>
       </div>
     </div>
   );
@@ -108,9 +113,9 @@ export function AppShell({
 
 function MiniStat({ label, value, accent }) {
   return (
-    <div style={{ display: "flex", justifyContent: "space-between", padding: "6px 10px", fontSize: 12, color: accent ? "var(--brick-700)" : "var(--gray-600)" }}>
-      <span>{label}</span>
-      <strong style={{ color: accent ? "var(--brick-700)" : "var(--blue-900)" }}>{value ?? "-"}</strong>
+    <div style={{ display: "flex", justifyContent: "space-between", padding: "5px 8px", fontSize: 11.5 }}>
+      <span style={{ color: "var(--gray-500)" }}>{label}</span>
+      <strong style={{ color: accent ? "var(--brick-700)" : "var(--blue-900)", fontVariantNumeric: "tabular-nums" }}>{value ?? "-"}</strong>
     </div>
   );
 }

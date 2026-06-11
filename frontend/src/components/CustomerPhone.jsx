@@ -208,7 +208,15 @@ export function CustomerPhone({ open, onClose, customers, shipments, onResult, o
                     <div className="wa-meta-row">
                       {!mine ? (
                         <span className="wa-src">
-                          {m.source === "office" ? "Office" : m.source === "agent_approved" ? "Agent (approved)" : m.source === "agent" ? "Agent" : "System"}
+                          {m.source === "office"
+                            ? "Office"
+                            : m.source === "agent_approved"
+                            ? "Agent (approved)"
+                            : m.source === "agent"
+                            ? "Agent"
+                            : m.source === "nudge"
+                            ? `Nudge${m.rule_label ? ` - ${m.rule_label}` : ""}`
+                            : "System"}
                         </span>
                       ) : null}
                       <span className="wa-time">{fmtTime(m.timestamp)}</span>

@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell(Copy-Item \"c:\\\\Users\\\\AkashPatil\\\\MAN_logistics\\\\frontend\\\\logos\\\\MAN_logo.jpg\" \"c:\\\\Users\\\\AkashPatil\\\\MAN_logistics\\\\frontend\\\\src\\\\assets\\\\MAN_logo.jpg\")",
+      "PowerShell(Copy-Item \"c:\\\\Users\\\\AkashPatil\\\\MAN_logistics\\\\frontend\\\\logos\\\\MAN_logo.png\" \"c:\\\\Users\\\\AkashPatil\\\\MAN_logistics\\\\frontend\\\\src\\\\assets\\\\MAN_logo.png\")",
+      "PowerShell(\"removed\")",
+      "Bash(rm -f runtime_dataset.json)",
+      "Bash(python -c ' *)"
+    ]
+  }
+}

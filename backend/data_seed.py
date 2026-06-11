@@ -907,14 +907,47 @@ def _make_kpis(shipments: list[dict], messages: list[dict], tickets: list[dict],
     }
 
 
+def _merge_sent_nudges_into_thread(messages: list[dict], nudges: list[dict]) -> None:
+    """Materialize every 'sent' nudge as an outgoing agent message so it shows
+    up in the customer's WhatsApp thread, not only on the Nudges board."""
+    ref_to_shipment_id = {}
+    for m in messages:
+        if m.get("shipment_ref") and m.get("shipment_id"):
+            ref_to_shipment_id.setdefault(m["shipment_ref"], m["shipment_id"])
+    seq = len(messages)
+    for n in nudges:
+        if n.get("status") != "sent":
+            continue
+        seq += 1
+        messages.append({
+            "id": f"MSG-NDG-{n['id']}",
+            "shipment_id": ref_to_shipment_id.get(n.get("shipment_ref")),
+            "shipment_ref": n.get("shipment_ref"),
+            "customer_id": n["customer_id"],
+            "customer_name": n.get("customer_name"),
+            "direction": "outgoing",
+            "text": n["draft"],
+            "timestamp": n.get("scheduled_at"),
+            "intent": "nudge",
+            "channel": n.get("channel", "whatsapp"),
+            "source": "nudge",
+            "nudge_id": n["id"],
+            "rule_label": n.get("rule_label"),
+        })
+    messages.sort(key=lambda m: m.get("timestamp") or "")
+
+
 def generate_dataset(seed: int = 42) -> dict[str, Any]:
     rng = random.Random(seed)
-    now = datetime(2026, 4, 20, 10, 30, 0)
+    # Anchor all relative timestamps (chats, SLA due, shipments) to real "now"
+    # so reseed produces fresh data instead of dates frozen in the past.
+    now = datetime.utcnow().replace(microsecond=0)
     customers = _make_customers(rng)
     shipments = _make_shipments(rng, customers, now)
     messages, tickets, actions = _make_chat_threads(rng, customers, shipments, now)
     broadcasts = _make_broadcasts(rng, customers, shipments, now)
     nudges = _make_nudges(rng, shipments, now)
+    _merge_sent_nudges_into_thread(messages, nudges)
     approvals = _make_approvals(rng, messages, customers, shipments, now)
     agent_runs = _make_agent_runs(messages, shipments, customers)
     kpis = _make_kpis(shipments, messages, tickets, actions, approvals=approvals, nudges=nudges)

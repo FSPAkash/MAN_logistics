@@ -8,7 +8,20 @@ const STATE_META = {
   idle:     { label: "Idle",         cls: "badge-muted" },
 };
 
-export function AgentInbox({ customers, shipments, tickets, lastResult, onOpenPhone }) {
+const NUDGE_STATUS_LABEL = {
+  scheduled: "Scheduled",
+  pending_approval: "Needs approval",
+  sent: "Sent",
+  cancelled: "Cancelled",
+};
+const NUDGE_STATUS_BADGE = {
+  scheduled: "badge-info",
+  pending_approval: "badge-warn",
+  sent: "badge-ok",
+  cancelled: "badge-muted",
+};
+
+export function AgentInbox({ customers, shipments, tickets, messages = [], nudges = [], lastResult, onOpenPhone }) {
   const [selectedId, setSelectedId] = useState(customers[0]?.id || "");
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState("all");
@@ -52,6 +65,44 @@ export function AgentInbox({ customers, shipments, tickets, lastResult, onOpenPh
     () => tickets.find((t) => t.customer_id === selectedId && t.status !== "resolved"),
     [tickets, selectedId]
   );
+
+  const customerNudges = useMemo(
+    () =>
+      nudges
+        .filter((n) => n.customer_id === selectedId)
+        .sort((a, b) => (b.scheduled_at || "").localeCompare(a.scheduled_at || "")),
+    [nudges, selectedId]
+  );
+
+  // The agent decision shown for the selected customer. If a live simulation was
+  // just run for THIS customer, show it; otherwise reconstruct from their own
+  // seeded thread so each conversation shows its own decision, not a shared one.
+  const decisionResult = useMemo(() => {
+    if (lastResult?.message?.customer_id === selectedId) return lastResult;
+    if (!selectedId) return null;
+
+    const mine = messages.filter((m) => m.customer_id === selectedId);
+    const lastIncoming = [...mine].reverse().find((m) => m.direction === "incoming");
+    if (!lastIncoming) return null;
+
+    const reply = [...mine]
+      .reverse()
+      .find((m) => m.direction === "outgoing" && m.reply_to === lastIncoming.id) || null;
+
+    const ticket = tickets.find(
+      (t) => t.customer_id === selectedId && t.message_id === lastIncoming.id
+    ) || tickets.find((t) => t.customer_id === selectedId && t.status !== "resolved") || null;
+
+    const escalated = Boolean(ticket);
+    const decision = escalated ? "escalate" : "auto_send";
+    const pipeline = [
+      { agent: "triage", decision: "route_to_resolver" },
+      { agent: "resolver", decision: escalated ? "propose_escalate" : "propose_auto_send" },
+      { agent: "supervisor", decision: escalated ? "escalate" : "auto_send" },
+    ];
+
+    return { message: lastIncoming, reply, ticket, pipeline, decision };
+  }, [lastResult, selectedId, messages, tickets]);
 
   function lastPreview(c) { return `${c.tier} tier - ${c.active_shipments} active`; }
   function lastTime(c) { return c.country; }
@@ -143,8 +194,8 @@ export function AgentInbox({ customers, shipments, tickets, lastResult, onOpenPh
 
         <div className="context-block">
           <h4>Last agent decision</h4>
-          {lastResult ? (
-            <LastRunCard result={lastResult} />
+          {decisionResult ? (
+            <LastRunCard result={decisionResult} />
           ) : (
             <p className="dim" style={{ fontSize: 12 }}>
               Send a message from the floating Customer Phone to see how the agent classifies, grounds, and routes it.
@@ -189,6 +240,33 @@ export function AgentInbox({ customers, shipments, tickets, lastResult, onOpenPh
             <p className="dim" style={{ fontSize: 12 }}>No shipments on file. Agent will reply generally.</p>
           )}
         </div>
+
+        <div className="context-block">
+          <h4>Proactive nudges</h4>
+          {customerNudges.length ? (
+            <div className="stack" style={{ gap: 8 }}>
+              {customerNudges.map((n) => (
+                <div key={n.id} className="context-card">
+                  <div className="row">
+                    <span className="badge badge-info">{n.rule_label}</span>
+                    <span className="spacer" />
+                    <span className={`badge ${NUDGE_STATUS_BADGE[n.status] || "badge-muted"}`}>
+                      {NUDGE_STATUS_LABEL[n.status] || n.status}
+                    </span>
+                  </div>
+                  <p className="run-draft-text" style={{ margin: "2px 0 0", fontSize: 12.5, color: "var(--ink)", lineHeight: 1.45 }}>
+                    {n.draft}
+                  </p>
+                  <div className="cite-row">
+                    {n.shipment_ref ? `${n.shipment_ref} - ` : ""}{n.status === "sent" ? "sent" : "scheduled"} {fmtTime(n.scheduled_at)}
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p className="dim" style={{ fontSize: 12 }}>No nudges fired for this customer.</p>
+          )}
+        </div>
       </section>
     </div>
   );
@@ -222,7 +300,9 @@ function LastRunCard({ result }) {
       ) : null}
       {ticket ? (
         <p className="dim" style={{ fontSize: 12, margin: "6px 0 0" }}>
-          Handoff ticket {ticket.id} opened for ops. Customer already acknowledged.
+          Handoff ticket {ticket.id} routed to {ticket.department_name || "ops"}
+          {ticket.assignee?.name ? ` - ${ticket.assignee.name}` : ""}.
+          {ticket.handoff_note ? ` ${ticket.handoff_note}` : ""}
         </p>
       ) : null}
     </div>
