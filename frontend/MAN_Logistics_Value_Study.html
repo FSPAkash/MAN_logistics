@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MAN Logistics — Value Study · Entry into the AI Age</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --font-sans:"Manrope",-apple-system,BlinkMacSystemFont,"Segoe UI",Tahoma,Arial,sans-serif;
+  --font-mono:"Manrope",-apple-system,BlinkMacSystemFont,"Segoe UI",Tahoma,Arial,sans-serif;
+
+  --bg-app:#FFFFFF; --bg-chrome:#FAFAFB; --bg-card:#FFFFFF; --bg-paper:#FFFFFF;
+  --bg-input:#FFFFFF; --bg-hover:#F3F4F6; --bg-stripe:#FAFAFB;
+
+  --ink:#111111; --ink-2:#3F3F3F; --ink-3:#757575; --ink-4:#A8A8A8;
+  --line:#E5E5E5; --line-2:#EFEFEF; --line-strong:#D0D0D0;
+
+  --accent:oklch(0.55 0.16 30); --accent-ink:oklch(0.42 0.18 30);
+  --accent-soft:oklch(0.92 0.05 30); --accent-tint:oklch(0.96 0.03 30);
+
+  --navy:#1F3A5F; --navy-soft:#EAF0F7; --navy-tint:#F4F7FB;
+
+  --shadow-window:0 1px 0 rgba(0,0,0,0.03),0 12px 32px -8px rgba(20,30,60,0.16),0 2px 6px rgba(20,30,60,0.08);
+  --r-window:10px; --r-card:6px; --r-input:4px;
+
+  --brand-grad:linear-gradient(to right,#A8321A 0,#A8321A 70%,#1F3A5F 70%,#1F3A5F 100%);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{font-family:var(--font-sans);font-size:14px;line-height:1.45;letter-spacing:-0.005em;
+  color:var(--ink);background:var(--bg-app);
+  font-feature-settings:"tnum" 1,"ss01" 1;-webkit-font-smoothing:antialiased;
+  padding:18px;display:flex;justify-content:center}
+@media(max-width:760px){body{padding:0}}
+.mono{font-family:var(--font-mono);font-variant-numeric:tabular-nums}
+
+/* ---------- document frame ---------- */
+.window{width:100%;max-width:1240px;background:var(--bg-card);border:1px solid var(--line-strong);
+  border-radius:var(--r-window);box-shadow:var(--shadow-window);overflow:hidden;
+  display:flex;flex-direction:column;min-height:calc(100vh - 36px)}
+@media(max-width:760px){.window{border-radius:0;border:none;min-height:100vh}}
+
+/* ---------- branded header ---------- */
+.dochead{display:flex;align-items:center;gap:14px;padding:14px 20px 13px;background:#FFFFFF;border-bottom:1px solid var(--line)}
+.dochead .logo{display:flex;align-items:center;gap:9px;font-weight:800;font-size:14px;letter-spacing:0.03em}
+.dochead .logo img{height:30px;width:auto;display:block}
+.dochead .logo .fs-head{height:22px}
+.dochead .logo .logo-div{width:1px;height:24px;background:var(--line-strong);flex:none}
+.dochead .meta{margin-left:auto;text-align:right;line-height:1.3}
+.dochead .meta .t{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:var(--navy)}
+.dochead .meta .s{font-family:var(--font-mono);font-size:10.5px;color:var(--ink-3);letter-spacing:0.02em}
+.dochead .fs{color:var(--accent-ink);font-weight:700}
+@media(max-width:560px){.dochead .meta .t{font-size:11px}}
+.brandstrip{height:3px;background:var(--brand-grad)}
+
+/* ---------- tabs ---------- */
+.tabs{display:flex;gap:2px;padding:0 16px;border-bottom:1px solid var(--line);background:var(--bg-paper);
+  overflow-x:auto;scrollbar-width:none;position:sticky;top:0;z-index:30}
+.tabs::-webkit-scrollbar{display:none}
+.tab-btn{appearance:none;border:none;background:none;cursor:pointer;white-space:nowrap;
+  font-family:var(--font-sans);font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;
+  color:var(--ink-3);padding:12px 14px 10px;border-bottom:3px solid transparent;transition:color 120ms}
+.tab-btn:hover{color:var(--ink)}
+.tab-btn:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+.tab-btn.active{color:var(--ink);border-image:var(--brand-grad) 1;border-bottom:3px solid}
+.tab-btn .n{font-family:var(--font-mono);color:var(--navy);margin-right:5px;font-size:10px}
+
+/* ---------- body ---------- */
+.body{flex:1;overflow-y:auto;scrollbar-gutter:stable;padding:22px 22px 36px}
+@media(max-width:640px){.body{padding:16px 14px 28px}}
+.panel{display:none;animation:fadeIn 120ms ease-out}
+.panel.active{display:block}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@media(prefers-reduced-motion:reduce){.panel{animation:none}}
+
+.eyebrow{display:flex;align-items:center;gap:8px;font-size:11px;font-weight:600;
+  letter-spacing:0.16em;text-transform:uppercase;color:var(--accent-ink);margin-bottom:8px}
+.eyebrow .bar{width:22px;height:2px;background:var(--accent)}
+h1.page{font-size:26px;font-weight:700;letter-spacing:-0.015em;margin-bottom:6px;max-width:40ch}
+h1.page em{font-style:normal;color:var(--accent-ink)}
+.lede{font-size:13px;color:var(--ink-2);max-width:94ch;margin-bottom:18px}
+p{font-size:13px;color:var(--ink-2);max-width:94ch;margin-bottom:10px}
+p strong{color:var(--ink)}
+
+/* section divider */
+.sec-rule{display:flex;align-items:center;gap:10px;margin:26px 0 14px}
+.sec-rule .lbl{font-size:10px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:var(--navy);white-space:nowrap}
+.sec-rule .ln{flex:1;height:1px;background:var(--line)}
+
+/* stat tiles */
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(165px,1fr));gap:10px;margin:14px 0 18px}
+.stat{border:1px solid var(--line);background:var(--bg-paper);border-radius:var(--r-card);padding:10px 12px}
+.stat .label{font-size:10.5px;text-transform:uppercase;letter-spacing:0.08em;color:var(--ink-3);font-weight:600}
+.stat .value{font-family:var(--font-mono);font-variant-numeric:tabular-nums;font-size:22px;font-weight:700;color:var(--ink);margin-top:2px}
+.stat .unit{font-size:11px;color:var(--ink-3);font-family:var(--font-mono);font-weight:500}
+.stat.hot{background:var(--accent-tint);border-color:var(--accent-soft)}
+.stat.hot .value{color:var(--accent-ink)}
+.stat.cool{background:var(--navy-tint);border-color:#D7E2EF}
+.stat.cool .value{color:var(--navy)}
+
+/* live-update pulse defined in the simulator section below */
+
+/* cards */
+.card{background:var(--bg-paper);border:1px solid var(--line);border-radius:var(--r-card);margin-bottom:14px}
+.card-head{min-height:32px;padding:6px 12px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;
+  border-bottom:1px solid var(--line-2);background:var(--bg-stripe);
+  font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:var(--ink-2)}
+.card-head .dot-r{width:7px;height:7px;border-radius:50%;background:var(--accent);flex:none}
+.card-head .spacer{margin-left:auto}
+.card-head .hint{font-weight:500;text-transform:none;letter-spacing:0;color:var(--ink-3);font-size:11px}
+.card-body{padding:14px 16px}
+.card-body p:last-child{margin-bottom:0}
+.cgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:10px}
+.cgrid .card{margin-bottom:0}
+.card-body h4{font-size:14.5px;font-weight:700;color:var(--ink);margin-bottom:6px;letter-spacing:-0.01em;line-height:1.3}
+
+/* pillar card */
+.pillar .card-body{display:flex;flex-direction:column;gap:9px;min-height:118px}
+.pillar p{font-size:12.5px;margin:0}
+.pillar .metric{margin-top:auto}
+
+
+/* fine-print credibility strip + caption */
+.credstrip{border-top:1px solid var(--line);margin-top:18px;padding-top:11px;font-size:11.5px;color:var(--ink-3);line-height:1.55;max-width:108ch}
+.credstrip b{color:var(--ink-2);font-weight:700}
+.caption{font-size:11px;color:var(--ink-4);line-height:1.55;margin-top:10px;border-top:1px dashed var(--line-2);padding-top:9px}
+.caption b{color:var(--ink-3)}
+.caption .nv{color:var(--navy);font-weight:700}.caption .rd{color:var(--accent-ink);font-weight:700}
+
+/* chips */
+.chip{display:inline-flex;align-items:center;gap:6px;height:22px;padding:0 8px;border-radius:11px;
+  font-size:11px;font-family:var(--font-mono);background:var(--bg-hover);color:var(--ink-2);border:1px solid var(--line-2);white-space:nowrap}
+.chip.accent{background:var(--accent-tint);color:var(--accent-ink);border-color:transparent}
+.chip.navy{background:var(--navy-soft);color:var(--navy);border-color:transparent}
+.chip.btn{cursor:pointer;user-select:none}
+.chip.btn:hover{filter:brightness(0.97)}
+
+/* tables */
+.t-scroll{overflow-x:auto;margin-bottom:14px}
+table.lots{width:100%;border-collapse:separate;border-spacing:0;background:var(--bg-paper);
+  border:1px solid var(--line);border-radius:var(--r-card);overflow:hidden}
+.lots thead th{background:var(--bg-stripe);border-bottom:1px solid var(--line);padding:8px 10px;text-align:left;
+  font-size:10.5px;text-transform:uppercase;letter-spacing:0.08em;color:var(--ink-3);font-weight:600;white-space:nowrap}
+.lots tbody td{padding:8px 10px;border-bottom:1px solid var(--line-2);font-size:12.5px;color:var(--ink);vertical-align:top}
+.lots tbody tr:nth-child(even) td{background:rgba(0,0,0,0.012)}
+.lots tbody tr:hover td{background:var(--bg-hover)}
+.lots td.num,.lots th.num{text-align:right;font-family:var(--font-mono);font-variant-numeric:tabular-nums;white-space:nowrap}
+.lots td.mono{font-family:var(--font-mono);font-variant-numeric:tabular-nums;white-space:nowrap}
+.lots td .sub{display:block;font-size:11px;color:var(--ink-3);font-weight:400;white-space:normal;margin-top:2px}
+.lots tr.total-row td{background:var(--navy-tint);font-weight:700;color:var(--navy)}
+.lots td.strike{color:var(--ink-3);text-decoration:line-through;text-decoration-color:var(--accent);text-decoration-thickness:1.5px}
+
+/* inline bars */
+.bar{height:5px;background:var(--line-2);border-radius:3px;overflow:hidden;min-width:70px}
+.bar>span{display:block;height:100%;background:var(--accent);transition:width 180ms ease}
+.bar>span.navy{background:var(--navy)}
+
+/* ---- value simulator ---- */
+.sim-results .card-head{background:var(--navy-tint);color:var(--navy)}
+.sim-results .card-head .dot-r{background:var(--navy)}
+.sim-hero{display:grid;grid-template-columns:minmax(250px,330px) 1fr;gap:22px;align-items:stretch}
+@media(max-width:780px){.sim-hero{grid-template-columns:1fr}}
+.sim-total{background:var(--accent-tint);border:1px solid var(--accent-soft);border-radius:var(--r-card);padding:14px 16px;
+  display:flex;flex-direction:column;justify-content:center}
+.sim-total .label{font-size:10.5px;text-transform:uppercase;letter-spacing:0.08em;color:var(--ink-3);font-weight:600}
+.sim-total .value{font-family:var(--font-mono);font-variant-numeric:tabular-nums;font-size:34px;font-weight:800;color:var(--accent-ink);margin-top:3px;line-height:1.1}
+@keyframes pulseTint{0%{background:var(--accent-soft)}100%{background:var(--accent-tint)}}
+.sim-total.upd{animation:pulseTint 480ms ease-out}
+@media(prefers-reduced-motion:reduce){.sim-total.upd{animation:none}}
+.subline{font-size:12px;color:var(--ink-2);margin-top:8px;line-height:1.45;letter-spacing:0}
+.subline b{font-family:var(--font-mono);font-variant-numeric:tabular-nums;color:var(--accent-ink);font-weight:700}
+
+.sim-chart{display:flex;flex-direction:column;justify-content:center;min-width:0}
+.sim-chart .label{font-size:10.5px;text-transform:uppercase;letter-spacing:0.08em;color:var(--ink-3);font-weight:600;margin-bottom:9px}
+.stackbar{display:flex;width:100%;height:30px;border-radius:5px;overflow:hidden;border:1px solid var(--line)}
+.stackbar .seg{height:100%;min-width:2px;transition:flex-grow 200ms ease;position:relative}
+.stackbar .seg+.seg{border-left:1px solid rgba(255,255,255,0.65)}
+.stacklegend{display:flex;flex-wrap:wrap;gap:5px 14px;margin-top:10px}
+.stacklegend .li{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--ink-2);font-family:var(--font-mono);font-variant-numeric:tabular-nums;white-space:nowrap}
+.stacklegend .sw{width:9px;height:9px;border-radius:2px;flex:none}
+.stacklegend .pc{color:var(--ink-3)}
+
+.sim-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:8px 28px}
+.sim-grp{min-width:0}
+
+/* fields / sliders */
+.field{display:flex;flex-direction:column;gap:5px;margin-bottom:13px}
+.field-label{font-size:11px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--ink-3);
+  display:flex;justify-content:space-between;gap:10px}
+.field-label output{font-family:var(--font-mono);font-variant-numeric:tabular-nums;color:var(--accent-ink);font-weight:700;text-transform:none;letter-spacing:0}
+.field-hint{font-size:11px;color:var(--ink-4)}
+input[type=range]{width:100%;accent-color:var(--accent);height:18px}
+input[type=range]:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.grp-label{font-size:10px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:var(--navy);
+  border-bottom:1px solid var(--line-2);padding-bottom:4px;margin:14px 0 11px}
+.grp-label:first-child{margin-top:0}
+
+/* lists */
+ol.plain{padding-left:20px;max-width:94ch;font-size:13px;color:var(--ink-2)}
+ol.plain li{margin-bottom:8px}
+ol.plain li::marker{font-family:var(--font-mono);color:var(--navy);font-weight:700}
+
+/* statusbar */
+.statusbar{height:34px;background:var(--bg-chrome);border-top:1px solid var(--line);display:flex;align-items:center;
+  gap:10px;padding:0 12px;font-family:var(--font-mono);font-size:11px;color:var(--ink-3);overflow:hidden;white-space:nowrap}
+.statusbar .dot{width:7px;height:7px;border-radius:50%;background:var(--navy);box-shadow:0 0 0 3px var(--navy-soft);flex:none}
+.statusbar .sep{width:1px;height:14px;background:var(--line);flex:none}
+.statusbar .right{margin-left:auto;display:flex;align-items:center;gap:8px}
+.statusbar .fs{font-weight:700;color:var(--ink-2);letter-spacing:0.04em}
+@media(max-width:700px){.statusbar .hide-s{display:none}}
+</style>
+</head>
+<body>
+<div class="window">
+
+  <header class="dochead">
+    <div class="logo">
+      <img src="logos/MAN_logo.png" alt="MAN Logistics">
+      <span class="logo-div"></span>
+      <img class="fs-head" src="logos/FS.png" alt="Findability Sciences">
+    </div>
+    <div class="meta">
+      <div class="t">Value Study — Entry into the AI Age</div>
+      <div class="s">Pre-proposal · Jun 2026</div>
+    </div>
+  </header>
+  <div class="brandstrip"></div>
+
+  <nav class="tabs" role="tablist" aria-label="Sections">
+    <button class="tab-btn active" role="tab" aria-selected="true" data-tab="case"><span class="n">01</span>The Case</button>
+    <button class="tab-btn" role="tab" aria-selected="false" data-tab="value"><span class="n">02</span>The Value Model</button>
+  </nav>
+
+  <div class="body">
+
+  <!-- ============================================================= -->
+  <!-- ============ 01 · THE CASE ================================== -->
+  <!-- ============================================================= -->
+  <section class="panel active" id="case" role="tabpanel">
+    <div class="eyebrow"><span class="bar"></span>The opportunity</div>
+    <h1 class="page">MAN's <em>entry into the AI age</em> begins on the customer desk.</h1>
+    <p class="lede">MAN owns no ships or aircraft — it sells coordination, visibility and responsiveness, backed by a 15-year reputation for exactly that. An AI agent layer on the customer desk answers shipment questions in seconds, alerts clients before they ask, and routes the hard cases to the right person — so that reputation scales without scaling headcount. Freight forwarding nets 3–4 paise per rupee invoiced, so every rupee of value created here carries the weight of 25–30 rupees of freight revenue.</p>
+
+    <div class="stats">
+      <div class="stat hot"><div class="label">Annual value created</div><div class="value">₹62 L – ₹125 L</div><div class="unit">conservative → base, per year</div></div>
+      <div class="stat"><div class="label">Hours returned</div><div class="value">10,000+</div><div class="unit">MAN + customer hrs / yr</div></div>
+      <div class="stat"><div class="label">Coverage window</div><div class="value">27% → 100%</div><div class="unit">share of the week answerable</div></div>
+      <div class="stat"><div class="label">First-mover window</div><div class="value">12–18</div><div class="unit">months, estimated</div></div>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><span class="dot-r"></span>What the AI customer desk does</div>
+      <div class="t-scroll" style="margin:0"><table class="lots">
+        <thead><tr><th>The desk</th><th>How it works</th><th>What MAN gains</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Answers instantly</strong></td><td class="mono">Reads live shipment data and replies on the customer's own channel</td><td>Status answers in &lt;3s, 24/7 — removes the biggest support driver</td></tr>
+          <tr><td><strong>Acts only when sure</strong></td><td class="mono">Drafts from real data and self-checks before anything is sent</td><td>Safe automation MAN can trust — 50–65% of routine load handled</td></tr>
+          <tr><td><strong>Routes the hard cases</strong></td><td class="mono">Escalates to the right team with an SLA clock; nothing dropped</td><td>Audit-grade service evidence that unlocks enterprise RFPs</td></tr>
+          <tr><td><strong>Tells clients first</strong></td><td class="mono">Fires proactive alerts on tracking events — delays, customs, delivery</td><td>The stickiness lever — loyalty money usually can't buy</td></tr>
+          <tr><td><strong>Proves the value</strong></td><td class="mono">A live operations dashboard tracks every interaction</td><td>Every claim in this study, measured monthly in MAN's own data</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+
+    <div class="sec-rule"><span class="lbl">Why it pays</span><span class="ln"></span></div>
+    <div class="cgrid">
+      <div class="card pillar"><div class="card-head"><span class="dot-r"></span>Pillar 01 · Step into the AI age first <span class="spacer"></span><span class="chip navy">POSITION</span></div>
+        <div class="card-body">
+          <h4>First mover takes the whole prize.</h4>
+          <p>No mid-size Indian forwarder has put AI on the customer desk yet. Whoever moves first owns the story, the RFP wins and the pricing power.</p>
+          <span class="chip accent metric">AI-in-logistics ~31.7% / yr</span>
+        </div>
+      </div>
+      <div class="card pillar"><div class="card-head"><span class="dot-r"></span>Pillar 02 · Retention is the return <span class="spacer"></span><span class="chip navy">RETURNS</span></div>
+        <div class="card-body">
+          <h4>Keeping a client beats winning one.</h4>
+          <p>An always-on, 24/7 desk removes the service slips that quietly lose long-tenure accounts as volume grows. Protected revenue is the highest-leverage rupee on the P&amp;L.</p>
+          <span class="chip accent metric">5–7× cheaper than acquisition</span>
+        </div>
+      </div>
+      <div class="card pillar"><div class="card-head"><span class="dot-r"></span>Pillar 03 · Stickiness by design <span class="spacer"></span><span class="chip navy">MOAT</span></div>
+        <div class="card-body">
+          <h4>Tell clients first, and they stay.</h4>
+          <p>Proactive alerts embed MAN into the client's daily workflow — and every interaction becomes data that makes the service sharper. Embedded experience is hard to leave.</p>
+          <span class="chip accent metric">WISMO volume down 50–70%</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="sec-rule"><span class="lbl">The time dividend</span><span class="ln"></span></div>
+    <p>Money is one currency; in logistics, time is the other. The same agent layer that creates the financial value also changes the clock — for MAN's team, its customers, and management.</p>
+
+    <div class="card">
+      <div class="card-head"><span class="dot-r"></span>Response time · before → after</div>
+      <div class="t-scroll" style="margin:0"><table class="lots">
+        <thead><tr><th>Moment</th><th>Today</th><th>With the AI desk</th><th>Gain</th></tr></thead>
+        <tbody>
+          <tr><td>Shipment status answer<span class="sub">"where is my cargo?"</span></td><td class="strike mono">30 min – 4 hrs (lookup + call-back)</td><td class="mono">&lt; 3 seconds, any channel</td><td><span class="chip navy">SELF-SERVE</span></td></tr>
+          <tr><td>POD / BL / customs document<span class="sub">retrieval &amp; dispatch</span></td><td class="strike mono">hours – days</td><td class="mono">&lt; 30 seconds</td><td><span class="chip navy">UNBLOCKS BILLING</span></td></tr>
+          <tr><td>Exception awareness<span class="sub">delay, hold, customs query</span></td><td class="strike mono">when the customer calls</td><td class="mono">&lt; 5 min proactive alert</td><td><span class="chip navy">DAYS GAINED</span></td></tr>
+          <tr><td>Rate enquiry &amp; booking<span class="sub">incl. evenings, weekends</span></td><td class="strike mono">next business day</td><td class="mono">minutes · 24/7/365</td><td><span class="chip navy">QUOTE↔WIN</span></td></tr>
+          <tr><td>Service coverage window<span class="sub">of the 168-hr week</span></td><td class="strike mono">~45 hrs (27%)</td><td class="mono">168 hrs (100%)</td><td><span class="chip navy">3.7× COVERAGE</span></td></tr>
+        </tbody>
+      </table></div>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><span class="dot-r"></span>Hours ledger · annual</div>
+      <div class="t-scroll" style="margin:0"><table class="lots">
+        <thead><tr><th>Time pool</th><th>Baseline (assumed)</th><th>Change</th><th class="num">Returned / yr</th></tr></thead>
+        <tbody>
+          <tr><td><strong>MAN's team</strong><span class="sub">routine inquiries · ~20 min effective each incl. lookups &amp; follow-ups</span></td><td class="mono">36,000 inq × 20 min ≈ 12,000 hrs</td><td>60% automated end-to-end</td><td class="num">≈ 7,200 hrs · 3.6 FTE-yrs</td></tr>
+          <tr><td><strong>MAN's customers</strong><span class="sub">chasing updates, holds, follow-ups</span></td><td class="mono">≈ 4,200 hrs of customer effort</td><td>Self-service + alerts remove ~65% of the need to ask</td><td class="num">≈ 2,800 hrs</td></tr>
+          <tr><td><strong>Management</strong><span class="sub">fire-fighting undetected exceptions; manual reporting</span></td><td class="mono">8–10 hrs/week senior time</td><td>5-min alerts + live dashboard</td><td class="num">≈ 350–450 hrs</td></tr>
+          <tr class="total-row"><td colspan="3">Combined time dividend</td><td class="num">≈ 10,000+ hrs / yr</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+
+    <div class="card" style="margin-top:14px">
+      <div class="card-head"><span class="dot-r"></span>What the freed time becomes</div>
+      <div class="card-body"><p>The ~3.6 FTE-years go straight into exception resolution, key-account farming and sales — <strong>not layoffs</strong>. And every hour a customer no longer spends chasing an update is the <strong>most felt, least copyable loyalty</strong> MAN can buy.</p></div>
+    </div>
+  </section>
+
+  <!-- ============================================================= -->
+  <!-- ============ 02 · THE VALUE MODEL =========================== -->
+  <!-- ============================================================= -->
+  <section class="panel" id="value" role="tabpanel">
+    <div class="eyebrow"><span class="bar"></span>The numbers</div>
+    <h1 class="page">The value simulator — <em>MAN's numbers, live</em>.</h1>
+    <p class="lede">Pick a scenario or move any input to MAN's real figures — the total, its composition and all six levers recompute instantly. L1–L4 are hard, auditable cost-and-cash items; L5–L6 are restrained revenue estimates tied to retention and 24/7 capture. Strategic and first-mover value are deliberately excluded; this is the money floor only.</p>
+
+    <!-- ===== simulation results (top) ===== -->
+    <div class="card sim-results">
+      <div class="card-head"><span class="dot-r"></span>Simulation results <span class="spacer"></span><span class="hint">recomputes live as you move any input below</span></div>
+      <div class="card-body">
+        <div class="sim-hero">
+          <div class="sim-total" id="tileTotal">
+            <div class="label">Total annual value</div>
+            <div class="value" id="kTotal">—</div>
+            <div class="subline">Same bottom-line impact as winning <b id="kEquiv">—</b> of new freight, at <span id="kMline">3.5%</span> net margin</div>
+          </div>
+          <div class="sim-chart">
+            <div class="label">Where it comes from</div>
+            <div class="stackbar" id="stackBar" role="img" aria-label="Composition of annual value by lever"></div>
+            <div class="stacklegend" id="stackLegend"></div>
+          </div>
+        </div>
+        <div class="stats" style="margin:16px 0 0">
+          <div class="stat cool"><div class="label">Team hours returned</div><div class="value" id="kHours">—</div><div class="unit">per year</div></div>
+          <div class="stat cool"><div class="label">Capacity released</div><div class="value" id="kFte">—</div><div class="unit">FTE-years</div></div>
+          <div class="stat cool"><div class="label">Customer hours back</div><div class="value" id="kCust">—</div><div class="unit">per year</div></div>
+          <div class="stat"><div class="label">5-year cumulative</div><div class="value" id="k5y">—</div><div class="unit">flat, no growth</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== simulation inputs (middle) ===== -->
+    <div class="card">
+      <div class="card-head"><span class="dot-r"></span>Simulation inputs
+        <span class="spacer"></span>
+        <span class="chip btn" id="presetCons">CONSERVATIVE</span>
+        <span class="chip btn accent" id="presetBase">BASE CASE</span>
+      </div>
+      <div class="card-body">
+        <div class="sim-grid">
+          <div class="sim-grp">
+            <div class="grp-label">Operations</div>
+            <div class="field"><label class="field-label" for="ship">Shipments / month <output id="shipOut">3,000</output></label><input type="range" id="ship" min="500" max="5000" step="100" value="3000"></div>
+            <div class="field"><label class="field-label" for="ips">Inquiries per shipment <output id="ipsOut">2.0</output></label><input type="range" id="ips" min="0.5" max="3" step="0.1" value="2.0"><div class="field-hint">Status, ETA, POD, docs, billing, rates — all channels</div></div>
+          </div>
+          <div class="sim-grp">
+            <div class="grp-label">Workload</div>
+            <div class="field"><label class="field-label" for="mins">Effective min / inquiry <output id="minsOut">22</output></label><input type="range" id="mins" min="5" max="35" step="1" value="22"><div class="field-hint">Incl. TMS/WMS lookups, call-backs, multi-touch</div></div>
+            <div class="field"><label class="field-label" for="auto">Automation rate <output id="autoOut">65%</output></label><input type="range" id="auto" min="40" max="75" step="1" value="65"><div class="field-hint">Benchmarks: median 41% · top quartile 59% · status 70%+</div></div>
+          </div>
+          <div class="sim-grp">
+            <div class="grp-label">Finance</div>
+            <div class="field"><label class="field-label" for="rev">Annual gross revenue <output id="revOut">₹180 Cr</output></label><input type="range" id="rev" min="50" max="300" step="5" value="180"></div>
+            <div class="field"><label class="field-label" for="dso">DSO improvement <output id="dsoOut">6 days</output></label><input type="range" id="dso" min="0" max="10" step="1" value="6"><div class="field-hint">From instant POD / invoice self-service</div></div>
+            <div class="field" style="margin-bottom:0"><label class="field-label" for="margin">Net profit margin <output id="mOut">3.5%</output></label><input type="range" id="margin" min="2" max="6" step="0.25" value="3.5"><div class="field-hint">Fixed: ₹5 L loaded FTE · 13% GM · 10% funds</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== lever detail (bottom) ===== -->
+    <div class="card">
+      <div class="card-head"><span class="dot-r"></span>The six levers · detail</div>
+      <div class="t-scroll" style="margin:0"><table class="lots" id="leverTable">
+        <thead><tr><th>#</th><th>Lever</th><th style="min-width:160px">Scale</th><th class="num">₹ L / yr</th></tr></thead>
+        <tbody></tbody>
+      </table></div>
+      <div class="card-body" style="padding-top:10px;padding-bottom:11px">
+        <div class="caption" style="margin:0;border:none;padding:0"><b>Bars:</b> <span class="nv">navy = hard cost/cash</span> · <span class="rd">red = net-revenue</span>. &nbsp;L1 = inquiry hrs × automation ÷ 2,000 × ₹5 L · L2 = FTE × 15% growth × ₹5 L · L3 = revenue × days ÷ 365 × 10% · L4 = 0.04% revenue · L5 = 1% × 13% GM · L6 = 0.5% × 13% GM.</div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:16px">
+      <div class="card-head"><span class="dot-r"></span>The bottom line</div>
+      <div class="card-body"><p>Every lever above is hard cost, freed cash or protected revenue — value that lands on the bottom line like profit. That's why a crore of it rivals tens of crores of new freight: at a 3–4% net margin, normal sales keep only 3–4 paise per rupee. And the money is just the floor — <strong>first-mover position, the returned time and the compounding data advantage all sit on top</strong>, uncounted here.</p></div>
+    </div>
+
+    <div class="sec-rule"><span class="lbl">Substantiation</span><span class="ln"></span></div>
+    <div class="cgrid">
+      <div class="card"><div class="card-head"><span class="dot-r"></span>Benchmark register</div>
+        <div class="t-scroll" style="margin:0"><table class="lots">
+          <thead><tr><th>Claim</th><th class="num">Figure</th></tr></thead>
+          <tbody>
+            <tr><td>AI deflection — median / top quartile<span class="sub">Zendesk · Salesforce 2026</span></td><td class="num">41% / 59%</td></tr>
+            <tr><td>Status-type intents deflection<span class="sub">Zendesk · Salesforce 2026</span></td><td class="num">70%+</td></tr>
+            <tr><td>Cost per resolution, AI vs human<span class="sub">McKinsey 2026</span></td><td class="num">$0.62 / $7.40</td></tr>
+            <tr><td>Avg support-cost reduction · 412 firms<span class="sub">IBM 2025</span></td><td class="num">30%</td></tr>
+            <tr><td>Forwarding gross / net margin<span class="sub">IBISWorld via GoFreight</span></td><td class="num">10–20% / 3–4%</td></tr>
+            <tr><td>Retention vs acquisition cost<span class="sub">GoFreight analysis</span></td><td class="num">5–7×</td></tr>
+            <tr><td>India AI-in-logistics CAGR<span class="sub">Markets &amp; Data FY25–32</span></td><td class="num">~31.7%</td></tr>
+          </tbody>
+        </table></div>
+      </div>
+      <div class="card"><div class="card-head"><span class="dot-r"></span>What discovery validates</div>
+        <div class="card-body">
+          <ol class="plain">
+            <li><strong>Shipment &amp; inquiry volumes</strong> — from shipment-event data and inquiry logs.</li>
+            <li><strong>Handling effort</strong> (FTE-equivalents · min/inquiry) — from process-mapping workshops.</li>
+            <li><strong>Margins &amp; cost of funds</strong> (GM 13% · net 3.5% · 10%) — confirm with MAN finance.</li>
+            <li><strong>POD-to-invoice lag &amp; DSO</strong> — from TMS / finance; sets the cash-lever ceiling.</li>
+            <li><strong>Demurrage / detention / penalty history</strong> — often larger than assumed here.</li>
+            <li><strong>Quote turnaround &amp; quote-to-win rate</strong> — from CRM; baselines the bookings lever.</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+
+    <div class="credstrip"><b>Conservative by design.</b> Every figure is a stated assumption from MAN's public profile and published benchmarks — replaced by MAN's audited data in joint discovery, then measured monthly after go-live. Salaries assume ₹5 L loaded FTE (India freight roles ₹3.2–4.4 L base; Indeed · SalaryExpert · PayScale). Market: India freight forwarding $11.8 B, ~6.4% CAGR (IMARC 2024).</div>
+  </section>
+
+  </div><!-- /body -->
+
+  <div class="statusbar">
+    <span class="dot"></span><span>READY</span>
+    <span class="sep"></span><span class="hide-s">DOC FS-VS-2026 · PRE-PROPOSAL</span>
+    <span class="sep hide-s"></span><span class="hide-s">FIGURES: PRE-DISCOVERY ASSUMPTIONS</span>
+    <div class="right"><span class="hide-s">CONFIDENTIAL</span><span class="sep hide-s"></span><span style="display:inline-flex;align-items:center;gap:6px">Powered by <img src="logos/FS.png" alt="Findability Sciences" style="height:13px;width:auto"></span></div>
+  </div>
+
+</div><!-- /window -->
+
+<script>
+/* ---------- tabs ---------- */
+const tabs=document.querySelectorAll('.tab-btn'),panels=document.querySelectorAll('.panel');
+const bodyEl=document.querySelector('.body');
+tabs.forEach(t=>t.addEventListener('click',()=>{
+  tabs.forEach(x=>{x.classList.remove('active');x.setAttribute('aria-selected','false')});
+  panels.forEach(p=>p.classList.remove('active'));
+  t.classList.add('active');t.setAttribute('aria-selected','true');
+  document.getElementById(t.dataset.tab).classList.add('active');
+  if(t.dataset.tab==='value')recalc(false);
+  bodyEl.scrollTo({top:0});
+}));
+
+/* ---------- unified live value model ---------- */
+const $=id=>document.getElementById(id);
+const fmtL=v=>v>=100?('₹'+(v/100).toFixed(2).replace(/\.?0+$/,'')+' Cr'):('₹'+(v<10?v.toFixed(1):Math.round(v))+' L');
+
+const LEVMETA=[
+ ['L1','Inquiry automation','Routine query workload handled end-to-end','hard'],
+ ['L2','Hiring avoidance','CS hires avoided as volume grows × ₹5 L loaded','hard'],
+ ['L3','DSO / working capital','Faster POD-to-invoice × 10% cost of funds','hard'],
+ ['L4','Exception avoidance','Demurrage, detention, penalties & fire-fighting','hard'],
+ ['L5','Retention (net revenue)','Revenue protected from churn × 13% GM','rev'],
+ ['L6','Incremental bookings','24/7 quote capture × 13% GM','rev']
+];
+/* navy shades for hard levers L1-L4, red shades for net-revenue L5-L6 */
+const LEVCOLOR=['#1F3A5F','#3A557C','#5B7398','#8195B0','#A8321A','#C25B43'];
+
+function flash(el){el.classList.remove('upd');void el.offsetWidth;el.classList.add('upd');}
+
+function recalc(animate){
+  const ship=+$('ship').value, ips=+$('ips').value, mins=+$('mins').value,
+        auto=+$('auto').value/100, rev=+$('rev').value, dso=+$('dso').value, m=+$('margin').value;
+  $('shipOut').textContent=ship.toLocaleString('en-IN');
+  $('ipsOut').textContent=ips.toFixed(1);
+  $('minsOut').textContent=mins;
+  $('autoOut').textContent=Math.round(auto*100)+'%';
+  $('revOut').textContent='₹'+rev+' Cr';
+  $('dsoOut').textContent=dso+' day'+(dso===1?'':'s');
+  $('mOut').textContent=m+'%';
+
+  const inqYr=ship*ips*12;
+  const hoursBase=inqYr*mins/60;
+  const hoursSaved=hoursBase*auto;
+  const fte=hoursSaved/2000;
+  const L1=fte*5;
+  const L2=(hoursBase/2000)*0.15*5;
+  const L3=rev*100*dso/365*0.10;
+  const L4=rev*100*0.0004;
+  const L5=rev*100*0.01*0.13;
+  const L6=rev*100*0.005*0.13;
+  const vals=[L1,L2,L3,L4,L5,L6];
+  const total=vals.reduce((a,b)=>a+b,0);
+  const custHrs=inqYr*7/60*0.65;
+
+  $('kTotal').textContent=fmtL(total);
+  $('kEquiv').textContent=fmtL(total/(m/100));
+  $('kMline').textContent=m+'%';
+  $('kHours').textContent=Math.round(hoursSaved).toLocaleString('en-IN');
+  $('kFte').textContent=fte.toFixed(1);
+  $('kCust').textContent=Math.round(custHrs).toLocaleString('en-IN');
+  $('k5y').textContent=fmtL(total*5);
+  if(animate){flash($('tileTotal'));}
+
+  /* stacked composition bar + legend */
+  const sb=$('stackBar');sb.innerHTML='';
+  const lg=$('stackLegend');lg.innerHTML='';
+  vals.forEach((v,idx)=>{
+    const pct=v/total*100;
+    const seg=document.createElement('div');
+    seg.className='seg';
+    seg.style.flexGrow=Math.max(v,0.001);
+    seg.style.background=LEVCOLOR[idx];
+    seg.title=`${LEVMETA[idx][0]} ${LEVMETA[idx][1]} — ₹${v.toFixed(1)} L (${pct.toFixed(0)}%)`;
+    sb.appendChild(seg);
+    const li=document.createElement('span');
+    li.className='li';
+    li.innerHTML=`<span class="sw" style="background:${LEVCOLOR[idx]}"></span>${LEVMETA[idx][0]} <span class="pc">${pct.toFixed(0)}%</span>`;
+    lg.appendChild(li);
+  });
+
+  const max=Math.max(...vals,0.001);
+  const tb=document.querySelector('#leverTable tbody');tb.innerHTML='';
+  LEVMETA.forEach((L,idx)=>{
+    const v=vals[idx];
+    const chip=L[3]==='hard'?'<span class="chip navy">HARD</span>':'<span class="chip accent">NET REV</span>';
+    const tr=document.createElement('tr');
+    tr.innerHTML=`<td class="mono">${L[0]}</td>
+      <td><strong>${L[1]}</strong> ${chip}<span class="sub">${L[2]}</span></td>
+      <td><div class="bar"><span style="width:${v/max*100}%;background:${LEVCOLOR[idx]}"></span></div></td>
+      <td class="num">₹${v.toFixed(1)} L</td>`;
+    tb.appendChild(tr);
+  });
+  const trt=document.createElement('tr');trt.className='total-row';
+  trt.innerHTML=`<td></td><td>Σ Steady-state total</td><td></td><td class="num">${fmtL(total)} / yr</td>`;
+  tb.appendChild(trt);
+}
+
+/* presets */
+const PRESETS={
+  cons:{ship:2000,ips:1.5,mins:18,auto:55,rev:125,dso:4,margin:3.5},
+  base:{ship:3000,ips:2.0,mins:22,auto:65,rev:180,dso:6,margin:3.5}
+};
+function applyPreset(p){
+  const v=PRESETS[p];
+  for(const k in v)$(k).value=v[k];
+  $('presetCons').className='chip btn'+(p==='cons'?' accent':'');
+  $('presetBase').className='chip btn'+(p==='base'?' accent':'');
+  recalc(true);
+}
+$('presetCons').addEventListener('click',()=>applyPreset('cons'));
+$('presetBase').addEventListener('click',()=>applyPreset('base'));
+['ship','ips','mins','auto','rev','dso','margin'].forEach(id=>$(id).addEventListener('input',()=>{
+  $('presetCons').className='chip btn';$('presetBase').className='chip btn';
+  recalc(true);
+}));
+
+recalc(false);
+</script>
+</body>
+</html>

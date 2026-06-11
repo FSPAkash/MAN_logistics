@@ -5,7 +5,15 @@
       "PowerShell(Copy-Item \"c:\\\\Users\\\\AkashPatil\\\\MAN_logistics\\\\frontend\\\\logos\\\\MAN_logo.png\" \"c:\\\\Users\\\\AkashPatil\\\\MAN_logistics\\\\frontend\\\\src\\\\assets\\\\MAN_logo.png\")",
       "PowerShell(\"removed\")",
       "Bash(rm -f runtime_dataset.json)",
-      "Bash(python -c ' *)"
+      "Bash(python -c ' *)",
+      "Bash(mkdir -p public/logos)",
+      "Bash(cp logos/MAN_logo.png logos/FS.png public/logos/)",
+      "Bash(cp MAN_Logistics_Value_Study.html public/MAN_Logistics_Value_Study.html)",
+      "Read(//c/c/Users/AkashPatil/MAN_logistics/frontend/**)",
+      "Bash(cd /c/Users/AkashPatil/MAN_logistics/frontend && cp MAN_Logistics_Value_Study.html public/MAN_Logistics_Value_Study.html && echo synced)"
+    ],
+    "additionalDirectories": [
+      "c:\\c\\Users\\AkashPatil\\MAN_logistics\\frontend"
     ]
   }
 }

@@ -47,6 +47,15 @@ export function AppShell({
               <span className="dot" />
               {agentPillLabel}
             </div>
+            <a
+              className="btn-ghost btn-small"
+              href="/MAN_Logistics_Value_Study.html"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ textDecoration: "none" }}
+            >
+              Value Study
+            </a>
             <button type="button" className="btn-primary btn-small" onClick={onReseed}>
               Reseed
             </button>
